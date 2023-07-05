@@ -29,6 +29,7 @@ window.addEventListener('load', function() {
             this.free = true;
 
             this.angle = 0;
+            this.va = Math.random() * 0.2 - 0.01;
         }
         draw(context) {
             // we draw only if asteroid is currently being used:
@@ -38,18 +39,25 @@ window.addEventListener('load', function() {
                 // context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
                 // context.stroke();
 
-                // save()/restore() are for rotation purposes:
+                /* save()/restore() are for rotation purposes. translate() and rotate() are additive,
+                meaning calling them over & over adds up, we we use save() to reset back to a "safe state" */
+
                 context.save();
+
+                /* rotate() rotates the ENTIRE canvas, not individual objects, at coord (0, 0). 
+                we redefine that rotation point using translate(), and set it as each obj's (x, y) */
                 context.translate(this.x, this.y);
                 context.rotate(this.angle);
-
                 context.drawImage(this.image, 0 - this.spriteWidth * 0.5, 
                 0 - this.spriteHeight * 0.5, this.spriteWidth, this.spriteHeight);
                 context.restore();
+
+                // context.drawImage(this.image, this.x - this.spriteWidth * 0.5, 
+                // this.y - this.spriteHeight * 0.5, this.spriteWidth, this.spriteHeight);
             }
         }
         update() {
-            this.angle += 0.01;
+            this.angle += this.va;
             if (!this.free) {
                 this.x += this.speed;
                 if (this.x > this.game.width + this.radius) {
