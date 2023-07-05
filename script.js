@@ -17,14 +17,13 @@ window.addEventListener('load', function() {
         constructor(game) {
             this.game = game;
             this.radius = 75;
-            this.x = 0;
-            this.y = Math.floor(Math.random() * this.game.height);
-            this.x = Math.random() * this.game.width;
+            this.x = -this.radius;
+            // this.y = Math.floor(Math.random() * this.game.height);
             this.y = Math.random() * this.game.height;
             this.image = document.getElementById("asteroid");
             this.spriteWidth = 150;
             this.spriteHeight = 155;
-            this.speed = 1;
+            this.speed = Math.random() * 1.5 + 0.1;
 
             // asteroids in the pool are initially ready (free) to be used:
             this.free = true;
@@ -32,9 +31,9 @@ window.addEventListener('load', function() {
         draw(context) {
             // we draw only if asteroid is currently being used:
             if (!this.free) {
-                context.beginPath();
-                context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                context.stroke();
+                // context.beginPath();
+                // context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                // context.stroke();
                 context.drawImage(this.image, this.x - this.spriteWidth * 0.5, 
                 this.y - this.spriteHeight * 0.5, this.spriteWidth, this.spriteHeight);
             }
@@ -42,19 +41,19 @@ window.addEventListener('load', function() {
         update() {
             if (!this.free) {
                 this.x += this.speed;
-                if (this.x > this.game.width) {
+                if (this.x > this.game.width + this.radius) {
                     this.reset();
                 }
             }
         }
         reset() {
             // if asteroid gets destroyed or moves off screen, we reset it to true, ready to be used again:
+            this.x = -this.radius;
             this.free = true;
         }
         // we use this when pulling objects out of the pool, reseting to their initial start values:
         start() {
             this.free = false;
-            this.x = 0;
             this.y = Math.floor(Math.random() * this.game.height);
         }
     }
