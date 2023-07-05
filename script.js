@@ -27,18 +27,29 @@ window.addEventListener('load', function() {
 
             // asteroids in the pool are initially ready (free) to be used:
             this.free = true;
+
+            this.angle = 0;
         }
         draw(context) {
             // we draw only if asteroid is currently being used:
             if (!this.free) {
+                // DRAW ARC:
                 // context.beginPath();
                 // context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
                 // context.stroke();
-                context.drawImage(this.image, this.x - this.spriteWidth * 0.5, 
-                this.y - this.spriteHeight * 0.5, this.spriteWidth, this.spriteHeight);
+
+                // save()/restore() are for rotation purposes:
+                context.save();
+                context.translate(this.x, this.y);
+                context.rotate(this.angle);
+
+                context.drawImage(this.image, 0 - this.spriteWidth * 0.5, 
+                0 - this.spriteHeight * 0.5, this.spriteWidth, this.spriteHeight);
+                context.restore();
             }
         }
         update() {
+            this.angle += 0.01;
             if (!this.free) {
                 this.x += this.speed;
                 if (this.x > this.game.width + this.radius) {
