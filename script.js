@@ -31,18 +31,20 @@ window.addEventListener('load', function() {
             // we draw only if asteroid is currently being used:
             if (!this.free) {
                 // DRAW ARC:
-                context.beginPath();
-                context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                context.stroke();
+                // context.beginPath();
+                // context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                // context.stroke();
 
                 // DRAW IMAGE: 
-                // context.drawImage(this.image, this.x - this.spriteWidth * 0.5, 
-                //     this.y - this.spriteHeight * 0.5, this.spriteWidth, this.spriteHeight);
+                context.drawImage(this.image, this.x - this.spriteWidth * 0.5, 
+                    this.y - this.spriteHeight * 0.5, this.spriteWidth, this.spriteHeight);
             }
         }
         update() {
             if (!this.free) {
+                // UPDATE only if the asteriod is currently being used.
                 this.x += this.speed;
+                // reset asteroid to initial position if it gets off-screen (return it to the pool)
                 if (this.x > this.game.width + this.radius) {
                     this.reset();
                 }
@@ -56,6 +58,7 @@ window.addEventListener('load', function() {
         // we use this when pulling objects out of the pool, reseting to their initial start values:
         start() {
             this.free = false;
+            this.x = -this.radius;
             this.y = Math.floor(Math.random() * this.game.height);
         }
     }
@@ -67,9 +70,12 @@ window.addEventListener('load', function() {
             this.asteroidPool = [];
             // if we create too many, we waste memory:
             this.max = 10;
+
+            // HELPER VARIABLES:
             this.asteroidTimer = 0;
             // we add one asteroid to the game every 1 second.
             this.asteroidInterval = 1000;
+
             // immediately calls this func. once a Game obj. is instanciated.
             this.createAsteroidPool();
         }
@@ -78,6 +84,7 @@ window.addEventListener('load', function() {
                 this.asteroidPool.push(new Asteroid(this));
             }
         }
+        // cycles over the object pool for the first asteroid with a "free" = true property.
         getElement() {
             for (let i = 0; i < this.asteroidPool.length; i++) {
                 if (this.asteroidPool[i].free) return this.asteroidPool[i];
