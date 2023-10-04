@@ -8,7 +8,6 @@ window.addEventListener('load', function() {
     const ctx = canvas.getContext('2d');
     canvas.width = 600;
     canvas.height = 800;
-
     
     ctx.strokeStyle = 'white';
     ctx.lineWidth = 3;
@@ -27,37 +26,21 @@ window.addEventListener('load', function() {
 
             // asteroids in the pool are initially ready (free) to be used:
             this.free = true;
-
-            this.angle = 0;
-            this.va = Math.random() * 0.2 - 0.01;
         }
         draw(context) {
             // we draw only if asteroid is currently being used:
             if (!this.free) {
                 // DRAW ARC:
-                // context.beginPath();
-                // context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                // context.stroke();
+                context.beginPath();
+                context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                context.stroke();
 
-                /* save()/restore() are for rotation purposes. translate() and rotate() are additive,
-                meaning calling them over & over adds up, we we use save() to reset back to a "safe state" */
-
-                context.save();
-
-                /* rotate() rotates the ENTIRE canvas, not individual objects, at coord (0, 0). 
-                we redefine that rotation point using translate(), and set it as each obj's (x, y) */
-                context.translate(this.x, this.y);
-                context.rotate(this.angle);
-                context.drawImage(this.image, 0 - this.spriteWidth * 0.5, 
-                0 - this.spriteHeight * 0.5, this.spriteWidth, this.spriteHeight);
-                context.restore();
-
+                // DRAW IMAGE:
                 // context.drawImage(this.image, this.x - this.spriteWidth * 0.5, 
-                // this.y - this.spriteHeight * 0.5, this.spriteWidth, this.spriteHeight);
+                //     this.y - this.spriteHeight * 0.5, this.spriteWidth, this.spriteHeight);
             }
         }
         update() {
-            this.angle += this.va;
             if (!this.free) {
                 this.x += this.speed;
                 if (this.x > this.game.width + this.radius) {
@@ -95,16 +78,13 @@ window.addEventListener('load', function() {
                 this.asteroidPool.push(new Asteroid(this));
             }
         }
-        /* searches for next available asteroid. If so, return it (stops function from running, so we don't
-        get more than one object). Very smart:
-
-        for lists containing hundreds of thousands of items, a good search tool is the "linked list" data structure
-        */
         getElement() {
             for (let i = 0; i < this.asteroidPool.length; i++) {
                 if (this.asteroidPool[i].free) return this.asteroidPool[i];
             }
         }
+
+        // this draws/updates the astroids and decides when to do it:
         render(context, deltaTime) {
             // periodically add asteroids:
             if (this.asteroidTimer > this.asteroidInterval) {
